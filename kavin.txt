@@ -1,0 +1,131 @@
+import java.util.*;
+
+class Book {
+    int id;
+    String title;
+    String author;
+    boolean isIssued;
+
+    public Book(int id, String title, String author) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isIssued = false;
+    }
+}
+
+class Member {
+    int id;
+    String name;
+
+    public Member(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+}
+
+public class LibraryManagementSystem {
+    static Scanner scanner = new Scanner(System.in);
+    static List<Book> books = new ArrayList<>();
+    static List<Member> members = new ArrayList<>();
+
+    public static void main(String[] args) {
+        int choice;
+        do {
+            System.out.println("\n==== Library Management System ====");
+            System.out.println("1. Add Book");
+            System.out.println("2. View Books");
+            System.out.println("3. Register Member");
+            System.out.println("4. Issue Book");
+            System.out.println("5. Return Book");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+            switch (choice) {
+                case 1 -> addBook();
+                case 2 -> viewBooks();
+                case 3 -> registerMember();
+                case 4 -> issueBook();
+                case 5 -> returnBook();
+                case 6 -> System.out.println("Exiting... Goodbye!");
+                default -> System.out.println("Invalid choice. Try again.");
+            }
+        } while (choice != 6);
+    }
+
+    static void addBook() {
+        System.out.print("Enter book ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+        System.out.print("Enter title: ");
+        String title = scanner.nextLine();
+        System.out.print("Enter author: ");
+        String author = scanner.nextLine();
+
+        books.add(new Book(id, title, author));
+        System.out.println("Book added successfully!");
+    }
+
+    static void viewBooks() {
+        if (books.isEmpty()) {
+            System.out.println("No books in library.");
+            return;
+        }
+        System.out.println("\n--- Book List ---");
+        for (Book b : books) {
+            System.out.printf("ID: %d | Title: %s | Author: %s | %s\n",
+                    b.id, b.title, b.author, (b.isIssued ? "Issued" : "Available"));
+        }
+    }
+
+    static void registerMember() {
+        System.out.print("Enter member ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter member name: ");
+        String name = scanner.nextLine();
+
+        members.add(new Member(id, name));
+        System.out.println("Member registered successfully!");
+    }
+
+    static void issueBook() {
+        System.out.print("Enter book ID to issue: ");
+        int bookId = scanner.nextInt();
+        scanner.nextLine();
+        Book book = findBookById(bookId);
+
+        if (book == null) {
+            System.out.println("Book not found.");
+        } else if (book.isIssued) {
+            System.out.println("Book is already issued.");
+        } else {
+            book.isIssued = true;
+            System.out.println("Book issued successfully!");
+        }
+    }
+
+    static void returnBook() {
+        System.out.print("Enter book ID to return: ");
+        int bookId = scanner.nextInt();
+        scanner.nextLine();
+        Book book = findBookById(bookId);
+
+        if (book == null) {
+            System.out.println("Book not found.");
+        } else if (!book.isIssued) {
+            System.out.println("This book was not issued.");
+        } else {
+            book.isIssued = false;
+            System.out.println("Book returned successfully!");
+        }
+    }
+
+    static Book findBookById(int id) {
+        for (Book b : books) {
+            if (b.id == id) return b;
+        }
+        return null;
+    }
+}
